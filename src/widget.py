@@ -1,5 +1,6 @@
-from src.masks import get_mask_account, get_mask_card_number
 from datetime import datetime
+
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(account_card: str) -> str:
@@ -19,5 +20,8 @@ def get_date(date_str: str) -> str:
     """
     Converts a date string to DD.MM.YYYY format.
     """
-    date_obj = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-    return date_obj.strftime("%d.%m.%Y")
+    try:
+        date_obj = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        return date_obj.strftime("%d.%m.%Y")
+    except ValueError:
+        return ""
