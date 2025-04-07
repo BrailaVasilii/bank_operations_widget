@@ -45,3 +45,26 @@ print(sorted_data)
 
 ```bash
 poetry run pytest tests/
+# Модуль generators
+
+Модуль `generators` содержит функции и генераторы для работы с транзакциями.
+
+## Функции
+
+### `filter_by_currency(transactions, currency_code)`
+
+Фильтрует транзакции по заданной валюте.
+
+Args:
+    transactions (list): Список словарей с транзакциями.
+    currency_code (str): Код валюты для фильтрации.
+
+Yields:
+    dict: Транзакция, соответствующая заданной валюте.
+
+Пример использования:
+
+```python
+usd_transactions = filter_by_currency(transactions, "USD")
+for transaction in usd_transactions:
+    print(transaction)
