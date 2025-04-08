@@ -45,3 +45,25 @@ print(sorted_data)
 
 ```bash
 poetry run pytest tests/
+## Модуль `decorators`
+
+Этот модуль содержит декоратор `log`, который автоматически логирует детали выполнения функций.
+
+### Декоратор `log`
+
+Декоратор `@log` используется для автоматической регистрации информации о вызове функции, ее аргументах, результате и любых возникших ошибках.
+
+**Использование:**
+
+Декоратор можно применять к любой функции, добавив `@log` перед ее определением.
+
+```python
+from src.decorators import log
+
+@log()
+def my_function(x, y):
+    return x + y
+
+@log(filename="mylog.txt")
+def another_function(data):
+    print(f"Processing: {data}")
