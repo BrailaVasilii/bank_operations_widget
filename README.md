@@ -45,26 +45,25 @@ print(sorted_data)
 
 ```bash
 poetry run pytest tests/
-# Модуль generators
+## Модуль `decorators`
 
-Модуль `generators` содержит функции и генераторы для работы с транзакциями.
+Этот модуль содержит декоратор `log`, который автоматически логирует детали выполнения функций.
 
-## Функции
+### Декоратор `log`
 
-### `filter_by_currency(transactions, currency_code)`
+Декоратор `@log` используется для автоматической регистрации информации о вызове функции, ее аргументах, результате и любых возникших ошибках.
 
-Фильтрует транзакции по заданной валюте.
+**Использование:**
 
-Args:
-    transactions (list): Список словарей с транзакциями.
-    currency_code (str): Код валюты для фильтрации.
-
-Yields:
-    dict: Транзакция, соответствующая заданной валюте.
-
-Пример использования:
+Декоратор можно применять к любой функции, добавив `@log` перед ее определением.
 
 ```python
-usd_transactions = filter_by_currency(transactions, "USD")
-for transaction in usd_transactions:
-    print(transaction)
+from src.decorators import log
+
+@log()
+def my_function(x, y):
+    return x + y
+
+@log(filename="mylog.txt")
+def another_function(data):
+    print(f"Processing: {data}")
