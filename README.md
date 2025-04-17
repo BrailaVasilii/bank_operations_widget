@@ -1,3 +1,5 @@
+Markdown
+
 # Bank Operations Widget
 
 This project contains functions for processing bank operations data.
@@ -5,59 +7,94 @@ This project contains functions for processing bank operations data.
 ## Installation
 
 1. Clone the repository.
-2. Install dependencies.
-
-## Usage
-
-### filter_by_state
-
+2. Install dependencies using Poetry:
+   ```bash
+   poetry install
+Usage
+filter_by_state
 Filters a list of dictionaries by the 'state' key.
 
-```python
+Python
+
 from src.processing import filter_by_state
 
 data = [...]  # Your data
 filtered_data = filter_by_state(data, 'CANCELED')
 print(filtered_data)
-```
-
-### sort_by_date
-
+sort_by_date
 Sorts a list of dictionaries by the 'date' key.
 
-```python
+Python
+
 from src.processing import sort_by_date
 
 data = [...]  # Your data
 sorted_data = sort_by_date(data)
 print(sorted_data)
-```
-## Тестирование
+convert_currency_to_rub
+Converts the 'amount' in a transaction dictionary to Russian Rubles (RUB) using an external exchange rate API.
 
+Python
+
+import os
+from src.external_api import convert_currency_to_rub
+
+# Make sure to set the EXCHANGE_RATES_API_KEY environment variable
+os.environ["EXCHANGE_RATES_API_KEY"] = "YOUR_API_KEY_HERE"
+
+transaction = {"currency": "USD", "amount": 100}
+amount_in_rub = convert_currency_to_rub(transaction)
+print(f"Amount in RUB: {amount_in_rub}")
+read_json_file
+Reads data from a JSON file and returns a list of dictionaries.
+
+Python
+
+from src.utils import read_json_file
+
+file_path = "data.json"
+transactions = read_json_file(file_path)
+print(transactions)
+mask_account_number
+Masks an account number, showing only the first and last few digits.
+
+Python
+
+from src.masks import mask_account_number
+
+account_number = "1234567890123456"
+masked_number = mask_account_number(account_number)
+print(f"Masked account number: {masked_number}")
+Тестирование
 Для тестирования проекта используются следующие инструменты:
 
-* **pytest**: Фреймворк для запуска тестов.
-* **coverage.py**: Инструмент для измерения покрытия кода тестами.
-
-### Запуск тестов
-
+pytest: Фреймворк для запуска тестов.
+coverage.py: Инструмент для измерения покрытия кода тестами.
+Запуск тестов
 Чтобы запустить тесты, выполните следующую команду:
 
-```bash
+Bash
+
 poetry run pytest tests/
-## Модуль `decorators`
+Отчет о покрытии кода
+Чтобы сгенерировать отчет о покрытии кода, выполните следующие команды:
 
-Этот модуль содержит декоратор `log`, который автоматически логирует детали выполнения функций.
+Bash
 
-### Декоратор `log`
+poetry run coverage run -m pytest tests/
+poetry run coverage report -m
+Модуль decorators
+Этот модуль содержит декоратор log, который автоматически логирует детали выполнения функций.
 
-Декоратор `@log` используется для автоматической регистрации информации о вызове функции, ее аргументах, результате и любых возникших ошибках.
+Декоратор log
+Декоратор @log используется для автоматической регистрации информации о вызове функции, ее аргументах, результате и любых возникших ошибках.
 
-**Использование:**
+Использование:
 
-Декоратор можно применять к любой функции, добавив `@log` перед ее определением.
+Декоратор можно применять к любой функции, добавив @log перед ее определением. Вы можете настроить имя файла для логирования, передав аргумент filename декоратору. По умолчанию логи записываются в стандартный вывод.
 
-```python
+Python
+
 from src.decorators import log
 
 @log()
@@ -67,3 +104,10 @@ def my_function(x, y):
 @log(filename="mylog.txt")
 def another_function(data):
     print(f"Processing: {data}")
+Переменные окружения
+Для корректной работы некоторых функций могут потребоваться следующие переменные окружения:
+
+EXCHANGE_RATES_API_KEY: Ключ API для сервиса обмена валют. Необходим для функции convert_currency_to_rub. Вы можете получить ключ, зарегистрировавшись на одном из сервисов, предоставляющих API курсов валют.
+Пожалуйста, создайте файл .env в корне проекта и укажите в нем значение этой переменной:
+
+EXCHANGE_RATES_API_KEY=YOUR_ACTUAL_API_KEY
