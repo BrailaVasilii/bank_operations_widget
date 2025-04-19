@@ -1,5 +1,19 @@
+# src/utils.py
+import logging
 import json
 from typing import List, Dict, Any
+import os
+
+# Настройка логирования для модуля utils
+logger = logging.getLogger(__name__)
+logs_dir = "logs"
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
+file_handler = logging.FileHandler(os.path.join(logs_dir, "utils.log"), mode="w", encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
 
 
 def read_json_file(file_path: str) -> List[Dict[str, Any]]:
@@ -14,25 +28,31 @@ def read_json_file(file_path: str) -> List[Dict[str, Any]]:
         если файл не найден, пустой или содержит не список.
         Некорректные элементы списка (не словари) заменяются на пустые словари.
     """
+    logger.debug(f"Чтение JSON-файла: {file_path}")
     try:
         with open(file_path, "r") as f:
-            data = json.load(f)  # Загрузка данных из JSON-файла
-            print(f"Tipul datelor citite: {type(data)}")  # Временно добавлено для отладки
+            data = json.load(f)
+            logger.debug(f"Тип прочитанных данных: {type(data)}")
             if isinstance(data, list):
                 processed_data = []
                 for item in data:
                     if isinstance(item, dict):
-                        processed_data.append(item)  # Добавление корректного словаря
+                        processed_data.append(item)
+                        logger.debug(f"Добавлен корректный элемент: {item}")
                     else:
-                        processed_data.append({})  # Замена некорректного элемента пустым словарём
+                        processed_data.append({})
+                        logger.warning(f"Некорректный элемент (не словарь) заменен на пустой словарь: {item}")
+                logger.info(f"Файл успешно прочитан. Обработано {len(processed_data)} элементов.")
                 return processed_data
             else:
-                return []  # Возврат пустого списка, если корневой элемент не список
+                logger.warning("Корневой элемент файла не является списком. Возвращен пустой список.")
+                return []
     except FileNotFoundError:
-        return []  # Возврат пустого списка, если файл не найден
+        logger.error(f"Файл не найден: {file_path}")
+        return []
     except json.JSONDecodeError:
-        print("Eroare: Nu a reușit decodificarea răspunsului API")
-        return []  # Возврат пустого списка при ошибке декодирования JSON
+        logger.error(f"Ошибка декодирования JSON в файле: {file_path}")
+        return []
     except Exception as e:
-        print(f"O altă eroare la citirea fișierului: {e}")
-        return []  # Возврат пустого списка при других ошибках чтения файла
+        logger.critical(f"Непредвиденная ошибка при чтении файла {file_path}: {e}")
+        return []
