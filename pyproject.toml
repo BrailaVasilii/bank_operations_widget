@@ -10,7 +10,10 @@ requires-python = ">=3.13"
 dependencies = [
     "python-dotenv (>=1.1.0,<2.0.0)",
     "requests (>=2.32.3,<3.0.0)",
-    "coverage (>=7.8.0,<8.0.0)"
+    "coverage (>=7.8.0,<8.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "openpyxl (>=3.1.5,<4.0.0)",
+    "types-openpyxl (>=3.1.5.20250306,<4.0.0.0)"
 ]
 
 
@@ -31,6 +34,7 @@ mypy = "^1.15.0"
 pytest = "^8.3.5"
 pytest-cov = "^6.0.0"
 types-requests = "^2.32.0.20250328"
+pandas-stubs = "^2.2.3.250308"
 
 [tool.black]
 line-length = 119
