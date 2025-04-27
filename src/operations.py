@@ -1,6 +1,7 @@
 from typing import List, Dict
 import re
 from datetime import datetime
+from collections import Counter
 
 
 def filter_operations_by_status(operations: List[Dict], status: str) -> List[Dict]:
@@ -31,7 +32,16 @@ def sort_operations_by_date(operations: List[Dict], ascending: bool = True) -> L
     :param ascending: сортировка по возрастанию (True) или убыванию (False)
     :return: отсортированный список операций
     """
-    return sorted(operations, key=lambda x: datetime.strptime(x["date"], "%Y-%m-%dT%H:%M:%SZ"), reverse=not ascending)
+
+    def parse_date(date_str: str)-> datetime:
+        # Попробуем сначала обработать с дробной частью секунд
+        try:
+            return datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%f")
+        except ValueError:
+            # Если не получилось, попробуем без дробной части секунд
+            return datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
+
+    return sorted(operations, key=lambda x: parse_date(x["date"]), reverse=not ascending)
 
 
 def filter_operations_by_currency(operations: List[Dict], currency: str) -> List[Dict]:
@@ -50,12 +60,9 @@ def filter_operations_by_currency(operations: List[Dict], currency: str) -> List
 
 def count_operation_categories(operations: List[Dict]) -> Dict[str, int]:
     """
-    Подсчитывает количество операций по категориям (описаниям).
+    Подсчитывает количество операций по категориям (описаниям) с помощью Counter.
     :param operations: список операций
     :return: словарь с категориями и их количеством
     """
-    categories: dict[str, int] = {}
-    for op in operations:
-        category = op.get("description", "Неизвестно")
-        categories[category] = categories.get(category, 0) + 1
-    return categories
+    descriptions = [op.get("description", "Неизвестно") for op in operations]
+    return dict(Counter(descriptions))
