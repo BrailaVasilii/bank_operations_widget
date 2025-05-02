@@ -1,14 +1,13 @@
 import pandas as pd
 import logging
 import json
-from typing import List, Dict, Any
-
+from typing import List, Dict, Any, Hashable
 
 # Конфигурация логгера (должна быть выполнена только один раз в модуле)
 logging.basicConfig(level=logging.ERROR, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
+def read_csv_transactions(file_path: str) -> List[Dict[Hashable, Any]]:
     """
     Читает транзакции из CSV-файла.
 
@@ -33,7 +32,8 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
         raise
     except Exception as e:
         logging.error(f"Ошибка при чтении CSV-файла: {e}")
-        return []
+        empty_list: List[Dict[Hashable, Any]] = []
+        return empty_list
 
 
 def read_excel_transactions(file_path: str) -> List[Dict[str, Any]]:
@@ -78,16 +78,18 @@ def read_operations_json(file_path: str) -> List[Dict[str, Any]]:
         FileNotFoundError: Если файл не существует.
         json.JSONDecodeError: Если JSON-файл недействителен.
     """
+
+    empty_list: List[Dict[str, Any]] = []
     try:
         with open(file_path, "r") as f:
-            data = json.load(f)
+            data: List[Dict[str, Any]] = json.load(f)
         return data
     except FileNotFoundError:
         logging.error(f"JSON-файл не найден: {file_path}")
         raise
     except json.JSONDecodeError as e:
         logging.error(f"Ошибка при декодировании JSON из файла {file_path}: {e}")
-        return []
+        return empty_list
     except Exception as e:
         logging.error(f"Ошибка при чтении JSON-файла: {e}")
-        return []
+        return empty_list
